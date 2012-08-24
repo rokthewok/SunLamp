@@ -14,7 +14,7 @@ class DateTime:
 	def getTime(self):
 		return [self.hour, self.minute, self.second]
 
-	def getCsv(self):
+	def toCsv(self):
 		return "%s,%s,%s,%s,%s,%s" % (self.month, self.day, self.year, \
 			self.hour, self.minute, self.second)
 
