@@ -7,7 +7,6 @@ import xml.etree.cElementTree as xml
 from PyDateTime import DateTime
 
 def getDateTime(root, namespace):
-	'''returns the current DateTime from the WeatherBug response xml'''
 	dateTime = DateTime()
 	date = root.find('./%sob/%sob-date' % (namespace, namespace))
 	dateTime.month = date.find('./%smonth' % namespace).get('number')
@@ -20,7 +19,6 @@ def getDateTime(root, namespace):
 	return dateTime
 	
 def getSunrise(root, namespace):
-	'''returns the sunrise time from the WeatherBug response xml'''
 	dateTime = DateTime()
 	sunrise = root.find('./%sob/%ssunrise' % (namespace, namespace))
 	dateTime.month = sunrise.find('./%smonth' % namespace).get('number')
@@ -33,7 +31,6 @@ def getSunrise(root, namespace):
 	return dateTime
 
 def getSunset(root, namespace):
-	'''returns the sunset time from the WeatherBug response xml'''
 	dateTime = DateTime()
 	sunset = root.find('./%sob/%ssunset' % (namespace, namespace))
 	dateTime.month = sunset.find('./%smonth' % namespace).get('number')
@@ -45,9 +42,26 @@ def getSunset(root, namespace):
 
 	return dateTime
 
+def doWeatherBug(url, namespace):
+	response = requests.get(url)
+
+	root = xml.fromstring(response.text)
+
+	dateTime = getDateTime(root, namespace)
+	print dateTime.toString()
+
+	sunrise = getSunrise(root, namespace)
+	sunset = getSunset(root, namespace)
+	print sunrise.toString()
+	print sunset.toString()
+
+	return "%s,%s,%s" % (dateTime.toCsv(), sunrise.toCsv(), sunset.toCsv())
+
+
+# Main function
 os.seteuid(0)
 
-serial = Serial(0)
+serial = Serial(0, 9600)
 
 namespace = "{http://www.aws.com/aws}"
 apicode = "A4537183367"
@@ -57,14 +71,7 @@ outputType = "1"
 url = "http://api.wxbug.net/getLiveWeatherRSS.aspx?ACode=" + apicode + "&zipCode=" \
  + zipcode + "&UnitType=" + unitType +  "&OutputType=" + outputType
 
-response = requests.get(url)
-
-root = xml.fromstring(response.text)
-
-dateTime = getDateTime(root, namespace)
-print dateTime.toString()
-
-sunrise = getSunrise(root, namespace)
-sunset = getSunset(root, namespace)
-print sunrise.toString()
-print sunset.toString()
+while(True):
+	if(int(serial.readline()) == 1):
+		serialString = doWeatherBug(url, namespace)
+		serial.write(serialString)
