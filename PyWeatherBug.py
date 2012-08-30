@@ -6,9 +6,9 @@ import requests
 import xml.etree.cElementTree as xml
 from PyDateTime import DateTime
 
-def getDateTime(root, namespace):
+def getDateTime(whichDate, root, namespace):
 	dateTime = DateTime()
-	date = root.find('./%sob/%sob-date' % (namespace, namespace))
+	date = root.find('./%sob/%s%s' % (namespace, namespace, whichDate))
 	dateTime.month = date.find('./%smonth' % namespace).get('number')
 	dateTime.day = date.find('./%sday' % namespace).get('number')
 	dateTime.year = date.find('./%syear' % namespace).get('number')
@@ -18,40 +18,16 @@ def getDateTime(root, namespace):
 	
 	return dateTime
 	
-def getSunrise(root, namespace):
-	dateTime = DateTime()
-	sunrise = root.find('./%sob/%ssunrise' % (namespace, namespace))
-	dateTime.month = sunrise.find('./%smonth' % namespace).get('number')
-	dateTime.day = sunrise.find('./%sday' % namespace).get('number')
-	dateTime.year = sunrise.find('./%syear' % namespace).get('number')
-	dateTime.hour = sunrise.find('./%shour' %  namespace).get('number')
-	dateTime.minute = sunrise.find('./%sminute' %  namespace).get('number')
-	dateTime.second = sunrise.find('./%ssecond' %  namespace).get('number')
-	
-	return dateTime
-
-def getSunset(root, namespace):
-	dateTime = DateTime()
-	sunset = root.find('./%sob/%ssunset' % (namespace, namespace))
-	dateTime.month = sunset.find('./%smonth' % namespace).get('number')
-	dateTime.day = sunset.find('./%sday' % namespace).get('number')
-	dateTime.year = sunset.find('./%syear' % namespace).get('number')
-	dateTime.hour = sunset.find('./%shour' %  namespace).get('number')
-	dateTime.minute = sunset.find('./%sminute' %  namespace).get('number')
-	dateTime.second = sunset.find('./%ssecond' %  namespace).get('number')
-
-	return dateTime
-
 def doWeatherBug(url, namespace):
 	response = requests.get(url)
 
 	root = xml.fromstring(response.text)
 
-	dateTime = getDateTime(root, namespace)
+	dateTime = getDateTime('ob-date', root, namespace)
 	print dateTime.toString()
 
-	sunrise = getSunrise(root, namespace)
-	sunset = getSunset(root, namespace)
+	sunrise = getDateTime('sunrise', root, namespace)
+	sunset = getDateTime('sunset', root, namespace)
 	print sunrise.toString()
 	print sunset.toString()
 
