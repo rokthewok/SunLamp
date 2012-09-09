@@ -4,6 +4,7 @@ import os
 from serial import Serial
 import requests
 import xml.etree.cElementTree as xml
+import time
 from PyDateTime import DateTime
 
 def getDateTime(whichDate, root, namespace):
@@ -15,7 +16,10 @@ def getDateTime(whichDate, root, namespace):
 	dateTime.hour = date.find('./%shour' % namespace).get('number')
 	dateTime.minute = date.find('./%sminute' % namespace).get('number')
 	dateTime.second = date.find('./%ssecond' % namespace).get('number')
-	
+	dateTime.dayOfWeek = (time.localtime()).tm_wday
+	dateTime.dayOfYear = (time.localtime()).tm_yday
+	dateTime.daylightSavings = (time.localtime()).tm_isdst
+
 	return dateTime
 	
 def doWeatherBug(url, namespace):
@@ -31,7 +35,7 @@ def doWeatherBug(url, namespace):
 	print sunrise.toString()
 	print sunset.toString()
 
-	return "%s,%s,%s" % (dateTime.toLong(), sunrise.toLong(), sunset.toLong())
+	return "%d,%d,%d" % (int(dateTime.inSeconds()), int(sunrise.inSeconds()), int(sunset.inSeconds()))
 
 
 os.seteuid(0)
