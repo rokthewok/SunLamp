@@ -1,4 +1,5 @@
-
+import time
+`
 class DateTime:
 	def __init__(self):
 		self.month = 1
@@ -21,3 +22,7 @@ class DateTime:
 	def toString(self):
 		return "%02d/%02d/%02d %02d:%02d:%02d" % (int(self.month),int(self.day), int(self.year), \
 			int(self.hour), int(self.minute), int(self.second))
+
+	def toLong(self):
+		value = ( self.year - 1970 ) * SECS_PER_MIN * MIN_PER_HOUR * HOUR_PER_DAY * DAY_PER_YEAR
+		value = value + self.month * SECS_PER_MIN * MIN_PER_HOUR * HOUR_PER_DAY
