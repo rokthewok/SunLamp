@@ -33,24 +33,52 @@ void loop() {
 time_t syncClockAndSun() {
 	Serial.write(1);
 	while( Serial.available() > 0 ) {
-		int dateTimeMonth = Serial.parseInt();
-		int dateTimeDay = Serial.parseInt();
-		int dateTimeYear = Serial.parseInt();
-		int dateTimeHour = Serial.parseInt();
-		int dateTimeMinute = Serial.parseInt();
-		int dateTimeSecond = Serial.parseInt();
+		time_t datetime = Serial.parseInt();
+		sunrise = Serial.parseInt();
+		sunset = Serial.parseInt();
 		
-		int sunriseMonth = Serial.parseInt();
-		int sunriseDay = Serial.parseInt();
-		int sunriseYear = Serial.parseInt();
-		int 
+		return datetime;
 	}
 }
 
 void rise() {
-
+	//raise red from 0 to 255
+	red = 0;
+	for( int i = 0; i < 255; ++i ) {
+		++red;
+		analogWrite(redPin, red);
+		delay(5);
+	}
+	
+	// every 5 seconds, increment by the next item in the array
+	for( int i = 0; i < NUMBER_OF_INTERVALS; ++i ) {
+		green += greenChange[i];
+		blue += blueChange[i];
+		analogWrite(greenPin, green);
+		analogWrite(bluePin, blue);
+		delay(5000);
+	}
+	
+	hasRisen = true;
 }
 
 void set() {
-
+	// every 5 seconds, decrement by the next item in the array
+	for( int i = 0; i < NUMBER_OF_INTERVALS; ++i ) {
+		green -= greenChange[i];
+		blue -= blueChange[i];
+		analogWrite(greenPin, green);
+		analogWrite(bluePin, blue);
+		delay(5000);
+	}
+	
+	// lower red from 255 to 0
+	red = 255;
+	for( int i = 0; i < 255; ++i ) {
+		--red;
+		analogWrite(redPin, red);
+		delay(5);
+	}
+	
+	hasSet = true;
 }
