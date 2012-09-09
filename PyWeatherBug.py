@@ -31,7 +31,7 @@ def doWeatherBug(url, namespace):
 	print sunrise.toString()
 	print sunset.toString()
 
-	return "%s,%s,%s" % (dateTime.toCsv(), sunrise.toCsv(), sunset.toCsv())
+	return "%s,%s,%s" % (dateTime.toLong(), sunrise.toLong(), sunset.toLong())
 
 
 os.seteuid(0)
@@ -50,4 +50,4 @@ if(__name__ == '__main__'):
 	while(True):
 		if(int(serial.readline()) == 1):
 			serialString = doWeatherBug(url, namespace)
-		serial.write(serialString)
+			serial.write(serialString)
