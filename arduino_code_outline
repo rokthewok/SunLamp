@@ -1,0 +1,56 @@
+time_t sunrise;
+time_t sunset;
+bool hasRisen = false;
+bool hasSet = false;
+
+SunCycle updateSun();
+time_t syncClockAndSun();
+void rise();
+void set();
+
+void setup() {
+	setSyncProvider( syncClockAndSun );
+}
+
+void loop() {
+	while( 1 ) {
+		
+		if( now() >= sunrise && !hasRisen ) {
+			rise();
+		}
+
+		if( now() >= sunset && !hasSet ) {
+			set();
+		}
+
+		if( hour() == 0 && hasRisen && hasSet ) {
+			hasRisen = false;
+			hasSet = false;
+		}
+	}
+}
+
+time_t syncClockAndSun() {
+	Serial.write(1);
+	while( Serial.available() > 0 ) {
+		int dateTimeMonth = Serial.parseInt();
+		int dateTimeDay = Serial.parseInt();
+		int dateTimeYear = Serial.parseInt();
+		int dateTimeHour = Serial.parseInt();
+		int dateTimeMinute = Serial.parseInt();
+		int dateTimeSecond = Serial.parseInt();
+		
+		int sunriseMonth = Serial.parseInt();
+		int sunriseDay = Serial.parseInt();
+		int sunriseYear = Serial.parseInt();
+		int 
+	}
+}
+
+void rise() {
+
+}
+
+void set() {
+
+}
